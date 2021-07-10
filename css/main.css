@@ -1,45 +1,55 @@
 @charset 'utf-8';
 
-:root{
-  --default-font-color:rbg(29,29,31);
-  --default-font-size:14px;
-  --content-max-width:1000px;
+:root {
+  --default-font-color: rbg(29, 29, 31);
+  --default-font-size: 14px;
+  --content-max-width: 1000px;
 
-  --color-gray:#888;
+  --color-gray: #888;
 }
 
-html{
+html {
   font-style: 'Noto Sans KR', sans-serif;
   font-size: var(--default-font-size);
 }
 
-body{
+body {
   overflow-x: hidden;
   color: var(--default-font-color);
   letter-spacing: -0.05em;
   background-color: white;
 }
 
-p{
+p {
   line-height: 1.6;
 }
 
-a{
+a {
   color: var(--default-font-color);
   text-decoration: none;
 }
 
-.global-nav{
+.global-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 44px;
+  padding: 0 1rem;
 }
 
-.local-nav{
+.local-nav {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 100%;
   height: 52px;
+  padding: 0 1rem;
   border-bottom: 1px solid #ddd;
 }
 
 .global-nav-links,
-.local-nav-links{
+.local-nav-links {
   max-width: var(--content-max-width);
   height: 100%;
   display: flex;
@@ -47,38 +57,38 @@ a{
   margin: 0 auto;
 }
 
-.global-nav-links{
+.global-nav-links {
   justify-content: space-between;
 }
 
-.local-nav-links .product-name{
+.local-nav-links .product-name {
   margin-right: auto;
   font-size: 1.4rem;
-  font-weight: 900;  
+  font-weight: 900;
 }
 
-.local-nav-links a{
+.local-nav-links a {
   font-size: 0.8rem;
 }
 
-.local-nav-links a:not(.product-name){
+.local-nav-links a:not(.product-name) {
   margin-left: 2em;
 }
 
-.scroll-section{
+.scroll-section {
   padding-top: 50vh;
 }
 
-.scroll-section[id="0"] h1{
+.scroll-section[id='0'] h1 {
   font-size: 4rem;
   text-align: center;
 }
 
-.scroll-section[id="2"] .main-message{
+.scroll-section[id='2'] .main-message {
   font-size: 3.5rem;
 }
 
-.main-message{
+.main-message {
   height: 3em;
   margin: 5px 0;
   font-size: 2.5rem;
@@ -93,13 +103,13 @@ a{
   line-height: 1.2;
 }
 
-.main-message small{
+.main-message small {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
   display: block;
 }
 
-.product-desc{
+.product-desc {
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 0 1rem;
@@ -107,25 +117,25 @@ a{
   color: var(--color-gray);
 }
 
-.product-desc strong{
+.product-desc strong {
   float: left;
   margin-right: 0.2em;
   font-size: 3rem;
   color: var(--default-font-color);
 }
 
-.desc-message{
+.desc-message {
   width: 50%;
   font-weight: 900;
 }
 
-.pin{
+.pin {
   width: 1px;
   height: 100px;
   background-color: var(--default-font-color);
 }
 
-.mid-message{
+.mid-message {
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 0 1rem;
@@ -133,11 +143,11 @@ a{
   color: var(--color-gray);
 }
 
-.mid-message strong{
+.mid-message strong {
   color: var(--default-font-color);
 }
 
-.product-caption{
+.product-caption {
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 0 1rem;
@@ -145,68 +155,65 @@ a{
   color: var(--color-gray);
 }
 
-footer{
+footer {
   height: 7rem;
   color: white;
   background-color: darkorange;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.sticky-elem{
+.sticky-elem {
   width: 100%;
-  display:none;
+  display: none;
   position: fixed;
-  top:0;
+  top: 0;
   left: 0;
 }
 
-#show-scene-0 .scroll-section[id="0"] .sticky-elem,
-#show-scene-1 .scroll-section[id="1"] .sticky-elem,
-#show-scene-2 .scroll-section[id="2"] .sticky-elem,
-#show-scene-3 .scroll-section[id="3"] .sticky-elem
-{
+#show-scene-0 .scroll-section[id='0'] .sticky-elem,
+#show-scene-1 .scroll-section[id='1'] .sticky-elem,
+#show-scene-2 .scroll-section[id='2'] .sticky-elem,
+#show-scene-3 .scroll-section[id='3'] .sticky-elem {
   display: block;
 }
 
-
-@media (min-width:1024px){
-  .scroll-section[id="0"] h1{
+@media (min-width: 1024px) {
+  .scroll-section[id='0'] h1 {
     font-size: 9vw;
   }
 
-  .scroll-section[id="2"] .main-message{
+  .scroll-section[id='2'] .main-message {
     font-size: 6vw;
   }
 
-  .main-message{
+  .main-message {
     font-size: 4vw;
   }
-  
-  .main-message small{
+
+  .main-message small {
     font-size: 1.5vw;
   }
 
-  .product-desc{
+  .product-desc {
     font-size: 2rem;
   }
 
-  .product-desc strong{
+  .product-desc strong {
     font-size: 6rem;
   }
 
-  .desc-message{
+  .desc-message {
     width: 20%;
   }
 
-  .mid-message{
+  .mid-message {
     font-size: 4vw;
   }
-  
-  .product-caption{
+
+  .product-caption {
     font-size: 2rem;
   }
-
-} 
+}
