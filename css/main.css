@@ -77,6 +77,7 @@ a {
 
 .scroll-section {
   padding-top: 50vh;
+  border: 3px solid blue;
 }
 
 .scroll-section[id='0'] h1 {

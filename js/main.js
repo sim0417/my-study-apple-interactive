@@ -55,14 +55,26 @@
       scene.scrollHeight = sceneHeight;
       scene.objs.container.style.height = `${sceneHeight}px`;
     });
+
+    // 레이아웃을 셋팅할 때 현재 위치한 스크롤 위치에 따라 현재 페이지 위치를 설정한다.
+    yOffset = window.pageYOffset;
+    let totalScrollHeight = 0;
+    for (let i = 0; i < sceneInfo.length; i++) {
+      totalScrollHeight += sceneInfo[i].scrollHeight;
+      if (totalScrollHeight >= yOffset) {
+        currentScene = i;
+        break;
+      }
+    }
+    document.body.setAttribute('id', `show-scene-${currentScene}`);
   }
 
   function scrollLoop() {
-    prevScrollHeight = sceneInfo.reduce((acc, scene, idx) => {
+    prevScrollHeight = sceneInfo.reduce((height, scene, idx) => {
       if (idx < currentScene) {
-        acc += scene.scrollHeight;
+        height += scene.scrollHeight;
       }
-      return acc;
+      return height;
     }, 0);
 
     if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
@@ -77,6 +89,7 @@
 
     // 현재 스크롤 되고 있는 화면
     // console.log(currentScene);
+    document.body.setAttribute('id', `show-scene-${currentScene}`);
   }
 
   window.addEventListener('resize', () => {
