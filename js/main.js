@@ -9,6 +9,9 @@
   // 현재 활성화된 씬
   let currentScene = 0;
 
+  // 다음 씬 활성화시 ture 로 전환
+  let enableNewScene = false;
+
   const sceneInfo = [
     {
       //scene 0
@@ -17,6 +20,13 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('.scroll-section[id="0"]'),
+        messageA: document.querySelector('.scroll-section[id="0"] .main-message.a'),
+        messageB: document.querySelector('.scroll-section[id="0"] .main-message.b'),
+        messageC: document.querySelector('.scroll-section[id="0"] .main-message.c'),
+        messageD: document.querySelector('.scroll-section[id="0"] .main-message.d'),
+      },
+      values: {
+        messageA_opacity: [0, 1, { start: 0.1, end: 0.2 }],
       },
     },
     {
@@ -69,6 +79,60 @@
     document.body.setAttribute('id', `show-scene-${currentScene}`);
   }
 
+  function calcValues(values, currentY) {
+    const [startValue, endValue, frameValues] = values;
+    const scrollHeight = sceneInfo[currentScene].scrollHeight;
+    const scrollRatio = currentY / scrollHeight;
+
+    let result = 0;
+    if (frameValues) {
+      const { start, end } = frameValues;
+      const frameScrollStart = start * scrollHeight;
+      const frameScrollEnd = end * scrollHeight;
+      const frameScrollRange = frameScrollEnd - frameScrollStart;
+
+      // 현재 스크롤 영역이 파트의 영역 안에 있을 때
+      if (currentY >= frameScrollStart && currentY <= frameScrollEnd) {
+        let framScrollRatio = (currentY - frameScrollStart) / frameScrollRange;
+        result = framScrollRatio * (endValue - startValue) + startValue;
+      }
+      // 현재 스크롤 영역이 파트의 시작점에 들어오기 전일 때
+      else if (currentY < frameScrollStart) {
+        result = startValue;
+      }
+      // 현재 스크롤 영역이 파트의 영역을 넘어섰을 때
+      else if (currentY > frameScrollEnd) {
+        result = endValue;
+      }
+    } else {
+      result = scrollRatio * (endValue - startValue) + startValue;
+    }
+
+    return result;
+  }
+
+  function playAnimation() {
+    const { objs, values } = sceneInfo[currentScene];
+    const currentY = yOffset - prevScrollHeight;
+
+    // console.log(currentScene, currentY);
+
+    // TODO : 코드를 좀 더 깔끔하게 작성해야 함
+    switch (currentScene) {
+      case 0:
+        let msgA_animation = calcValues(values.messageA_opacity, currentY);
+        obj.messageA.style.opacity = msgA_animation;
+
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+    }
+  }
+
   function scrollLoop() {
     prevScrollHeight = sceneInfo.reduce((height, scene, idx) => {
       if (idx < currentScene) {
@@ -77,24 +141,30 @@
       return height;
     }, 0);
 
+    enableNewScene = false;
+
     if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
       currentScene++;
+      enableNewScene = true;
+
       if (currentScene >= sceneInfo.length) {
         currentScene = sceneInfo.length - 1;
       }
-    } else if (yOffset < prevScrollHeight) {
+    }
+    if (yOffset < prevScrollHeight) {
       currentScene--;
+      enableNewScene = true;
+
       if (currentScene < 0) currentScene = 0;
     }
 
-    // 현재 스크롤 되고 있는 화면
-    // console.log(currentScene);
+    // 현재 스크롤 되고 있는 화면 지정
     document.body.setAttribute('id', `show-scene-${currentScene}`);
-  }
 
-  window.addEventListener('resize', () => {
-    setLayout();
-  });
+    if (enableNewScene) return;
+
+    playAnimation();
+  }
 
   window.addEventListener('scroll', () => {
     // 페이지의 현재 스크롤 값을 변수에 할당한다.
@@ -102,5 +172,11 @@
     scrollLoop();
   });
 
-  setLayout();
+  window.addEventListener('resize', () => {
+    setLayout();
+  });
+
+  window.addEventListener('load', () => {
+    setLayout();
+  });
 })();
