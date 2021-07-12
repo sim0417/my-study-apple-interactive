@@ -26,7 +26,10 @@
         messageD: document.querySelector('.scroll-section[id="0"] .main-message.d'),
       },
       values: {
-        messageA_opacity: [0, 1, { start: 0.1, end: 0.2 }],
+        messageA_opacity_in: [0, 1, { start: 0.1, end: 0.2 }],
+        messageA_opacity_out: [1, 0, { start: 0.25, end: 0.3 }],
+        messageA_translateY_in: [20, 0, { start: 0.1, end: 0.2 }],
+        messageA_translateY_out: [0, -20, { start: 0.25, end: 0.3 }],
       },
     },
     {
@@ -112,16 +115,26 @@
   }
 
   function playAnimation() {
-    const { objs, values } = sceneInfo[currentScene];
+    const { objs, values, scrollHeight } = sceneInfo[currentScene];
     const currentY = yOffset - prevScrollHeight;
-
+    const scrollRatio = currentY / scrollHeight;
     // console.log(currentScene, currentY);
 
     // TODO : 코드를 좀 더 깔끔하게 작성해야 함
     switch (currentScene) {
       case 0:
-        let msgA_animation = calcValues(values.messageA_opacity, currentY);
-        obj.messageA.style.opacity = msgA_animation;
+        // const msgA_animation_in = calcValues(values.messageA_opacity_in, currentY);
+        // const msgA_animation_out = calcValues(values.messageA_opacity_out, currentY);
+        const msgA_animation_opacity =
+          scrollRatio <= 0.22 ? values.messageA_opacity_in : values.messageA_opacity_out;
+        const msgA_animation_translate =
+          scrollRatio <= 0.22 ? values.messageA_translateY_in : values.messageA_translateY_out;
+
+        objs.messageA.style.opacity = calcValues(msgA_animation_opacity, currentY);
+        objs.messageA.style.transform = `translateY(${calcValues(
+          msgA_animation_translate,
+          currentY
+        )}%)`;
 
         break;
       case 1:

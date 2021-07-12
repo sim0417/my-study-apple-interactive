@@ -93,6 +93,7 @@ a {
   height: 3em;
   margin: 5px 0;
   font-size: 2.5rem;
+  top: 35vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -171,7 +172,6 @@ footer {
   width: 100%;
   display: none;
   position: fixed;
-  top: 0;
   left: 0;
 }
 
