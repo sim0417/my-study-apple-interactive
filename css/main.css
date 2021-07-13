@@ -1,7 +1,7 @@
 @charset 'utf-8';
 
 :root {
-  --default-font-color: rbg(29, 29, 31);
+  --default-font-color: rgb(29, 29, 31);
   --default-font-size: 14px;
   --content-max-width: 1000px;
 
@@ -138,6 +138,16 @@ a {
   background-color: var(--default-font-color);
 }
 
+.scroll-section[id='2'] .b {
+  top: 10%;
+  left: 40%;
+}
+
+.scroll-section[id='2'] .c {
+  top: 15%;
+  left: 45%;
+}
+
 .mid-message {
   max-width: var(--content-max-width);
   margin: 0 auto;
@@ -209,6 +219,15 @@ footer {
 
   .desc-message {
     width: 20%;
+  }
+
+  .scroll-section[id='2'] .b {
+    top: 20%;
+    left: 53%;
+  }
+
+  .scroll-section[id='2'] .c {
+    left: 55%;
   }
 
   .mid-message {
