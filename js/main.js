@@ -24,8 +24,13 @@
         messageB: document.querySelector('.scroll-section[id="0"] .main-message.b'),
         messageC: document.querySelector('.scroll-section[id="0"] .main-message.c'),
         messageD: document.querySelector('.scroll-section[id="0"] .main-message.d'),
+        canvas: document.querySelector('#video-canvas-0'),
+        context: document.querySelector('#video-canvas-0').getContext('2d'),
+        videoImages: [],
       },
       values: {
+        videoImageCount: 300,
+        imageSequence: [0, 299],
         messageA_opacity_in: [0, 1, { start: 0.1, end: 0.2 }],
         messageA_opacity_out: [1, 0, { start: 0.25, end: 0.3 }],
         messageA_translateY_in: [20, 0, { start: 0.1, end: 0.2 }],
@@ -101,6 +106,15 @@
       values: {},
     },
   ];
+
+  function setCanvasImages() {
+    for (let i = 0; i < sceneInfo[0].values.videoImageCount; i++) {
+      let image = new Image();
+      image.src = `./video/001/IMG_${6726 + i}.JPG`;
+      sceneInfo[0].objs.videoImages.push(image);
+    }
+    console.log(sceneInfo[0].objs.videoImages);
+  }
 
   function setLayout() {
     const windowHeight = window.innerHeight;
@@ -289,6 +303,7 @@
   });
 
   window.addEventListener('load', () => {
+    setCanvasImages();
     setLayout();
   });
 })();
