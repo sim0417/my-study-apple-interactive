@@ -113,7 +113,6 @@
       image.src = `./video/001/IMG_${6726 + i}.JPG`;
       sceneInfo[0].objs.videoImages.push(image);
     }
-    console.log(sceneInfo[0].objs.videoImages);
   }
 
   function setLayout() {
@@ -142,6 +141,9 @@
       }
     }
     document.body.setAttribute('id', `show-scene-${currentScene}`);
+
+    const canvasHeightRatio = window.innerHeight / 1080;
+    sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${canvasHeightRatio})`;
   }
 
   function calcValues(values, currentY) {
@@ -184,6 +186,9 @@
     // TODO : 코드를 좀 더 깔끔하게 작성해야 함
     switch (currentScene) {
       case 0:
+        let imageSequence = Math.round(calcValues(values.imageSequence, currentY));
+        objs.context.drawImage(objs.videoImages[imageSequence], 0, 0);
+
         objs.messageA.style.opacity = calcValues(
           scrollRatio <= 0.22 ? values.messageA_opacity_in : values.messageA_opacity_out,
           currentY
@@ -303,7 +308,10 @@
   });
 
   window.addEventListener('load', () => {
-    setCanvasImages();
     setLayout();
+    const { context, videoImages } = sceneInfo[0].objs;
+    context.drawImage(videoImages[0], 0, 0);
   });
+
+  setCanvasImages();
 })();
