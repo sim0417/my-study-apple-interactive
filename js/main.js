@@ -31,6 +31,7 @@
       values: {
         videoImageCount: 300,
         imageSequence: [0, 299],
+        cnavas_opacity: [1, 0, { start: 0.9, end: 1 }],
         messageA_opacity_in: [0, 1, { start: 0.1, end: 0.2 }],
         messageA_opacity_out: [1, 0, { start: 0.25, end: 0.3 }],
         messageA_translateY_in: [20, 0, { start: 0.1, end: 0.2 }],
@@ -188,6 +189,7 @@
       case 0:
         let imageSequence = Math.round(calcValues(values.imageSequence, currentY));
         objs.context.drawImage(objs.videoImages[imageSequence], 0, 0);
+        objs.canvas.style.opacity = calcValues(values.cnavas_opacity, currentY);
 
         objs.messageA.style.opacity = calcValues(
           scrollRatio <= 0.22 ? values.messageA_opacity_in : values.messageA_opacity_out,
