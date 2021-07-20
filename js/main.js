@@ -110,8 +110,15 @@
       objs: {
         container: document.querySelector('.scroll-section[id="3"]'),
         canvasCaption: document.querySelector('.scroll-section[id="3"] .product-caption'),
+        canvas: document.querySelector('.image-blend-canvas'),
+        context: document.querySelector('.image-blend-canvas').getContext('2d'),
+        imagesPath: ['./images/blend-image-1.jpg', './images/blend-image-2.jpg'],
+        images: [],
       },
-      values: {},
+      values: {
+        rect1PosX: [0, 0, { start: 0, end: 0 }],
+        rect2PosX: [0, 0, { start: 0, end: 0 }],
+      },
     },
   ];
 
@@ -126,6 +133,12 @@
       let image = new Image();
       image.src = `./video/002/IMG_${7027 + i}.JPG`;
       sceneInfo[2].objs.videoImages.push(image);
+    }
+
+    for (let i = 0; i < sceneInfo[3].objs.imagesPath.length; i++) {
+      let image = new Image();
+      image.src = sceneInfo[3].objs.imagesPath[i];
+      sceneInfo[3].objs.images.push(image);
     }
   }
 
@@ -284,6 +297,28 @@
         objs.pinC.style.transform = `scaleY(${calcValues(values.pinC_scaleY, currentY)})`;
         break;
       case 3:
+        const { canvas, context, images } = objs;
+        const { rect1PosX, rect2PosX } = values;
+        // 캔버스 이미지가 기로세로 모두 꽉 차게하기 위해 셋팅
+        const widthRatio = window.innerWidth / canvas.width;
+        const heightRatio = window.innerHeight / canvas.height;
+        const canvasScaleRatio = widthRatio <= heightRatio ? heightRatio : widthRatio;
+        // 캔버스 사이즈에 맞춰 다시 계산한 넓이, 높이
+        const recalculatedInnerWidth = window.innerWidth / canvasScaleRatio;
+        const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
+        // 캔버스를 가릴 박스의 사이즈 지정
+        const whiteRectWidth = recalculatedInnerWidth * 0.15;
+        // 박스의 x 좌표를 계산한다.
+        // 매번 새로 계산을 해줘야 하는 이유는 브라우저의 크기에 따라서 값이 유동적으로 변하기 때문
+        rect1PosX[0] = (canvas.width - recalculatedInnerWidth) / 2;
+        rect1PosX[1] = rect1PosX[0] - whiteRectWidth;
+        rect2PosX[0] = rect1PosX[0] + recalculatedInnerWidth - whiteRectWidth;
+        rect2PosX[1] = rect2PosX[0] + whiteRectWidth;
+
+        canvas.style.transform = `scale(${canvasScaleRatio})`;
+        context.drawImage(images[0], 0, 0);
+        context.fillRect(rect1PosX[0], 0, parseInt(whiteRectWidth), canvas.height);
+        context.fillRect(rect2PosX[0], 0, parseInt(whiteRectWidth), canvas.height);
         break;
     }
   }
