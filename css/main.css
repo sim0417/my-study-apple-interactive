@@ -201,6 +201,15 @@ footer {
   left: 50%;
 }
 
+.image-blend-canvas {
+}
+
+.scroll-section[id='3'] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 #show-scene-0 .scroll-section[id='0'] .sticky-elem,
 #show-scene-1 .scroll-section[id='1'] .sticky-elem,
 #show-scene-2 .scroll-section[id='2'] .sticky-elem,

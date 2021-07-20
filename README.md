@@ -1,4 +1,4 @@
-# my-studya-apple-interactive
+# my-study-apple-interactive
 Study web interactive skills by cloning the apple home page
 
 
