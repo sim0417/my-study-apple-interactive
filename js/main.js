@@ -528,8 +528,15 @@
   });
 
   window.addEventListener('resize', () => {
-    setLayout();
+    if (window.innerWidth > 900) {
+      setLayout();
+    }
+
+    sceneInfo[3].values.rectStartY = 0;
   });
+
+  // 모바일기기에서 화면전환시 레이아웃을 재설정 한다.
+  window.addEventListener('orientationchange', setLayout);
 
   window.addEventListener('load', () => {
     setLayout();
