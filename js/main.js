@@ -539,9 +539,15 @@
   window.addEventListener('orientationchange', setLayout);
 
   window.addEventListener('load', () => {
+    document.body.classList.remove('before-load');
     setLayout();
     const { context, videoImages } = sceneInfo[0].objs;
     context.drawImage(videoImages[0], 0, 0);
+  });
+
+  // 로딩 트랜지션 이벤트가 끝나면 바디에서 제거한다.
+  document.querySelector('.loading').addEventListener('transitionend', (e) => {
+    document.body.removeChild(e.currentTarget);
   });
 
   setCanvasImages();
