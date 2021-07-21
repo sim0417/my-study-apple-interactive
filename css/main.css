@@ -78,6 +78,7 @@ a {
 }
 
 .scroll-section {
+  position: relative;
   padding-top: 50vh;
 }
 
@@ -118,7 +119,7 @@ a {
 
 .product-desc {
   max-width: var(--content-max-width);
-  margin: 0 auto;
+  margin: -8em auto 0;
   padding: 0 1rem;
   font-size: 1.2rem;
   color: var(--color-gray);
@@ -201,7 +202,8 @@ footer {
   left: 50%;
 }
 
-.image-blend-canvas {
+.image-blend-canvas.sticky {
+  position: fixed;
 }
 
 .scroll-section[id='3'] {
@@ -235,6 +237,7 @@ footer {
   }
 
   .product-desc {
+    padding: 0;
     font-size: 2rem;
   }
 
@@ -256,10 +259,13 @@ footer {
   }
 
   .mid-message {
+    max-width: var(--content-max-width);
+    padding: 0;
     font-size: 4vw;
   }
 
   .product-caption {
+    padding: 0;
     font-size: 2rem;
   }
 }

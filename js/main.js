@@ -118,6 +118,11 @@
       values: {
         rect1PosX: [0, 0, { start: 0, end: 0 }],
         rect2PosX: [0, 0, { start: 0, end: 0 }],
+        imageBlendHeight: [0, 0, { start: 0, end: 0 }],
+        canvas_scale: [0, 0, { start: 0, end: 0 }],
+        canvasCaption_opacity: [0, 1, { start: 0, end: 0 }],
+        canvasCaption_translateY: [20, 0, { start: 0, end: 0 }],
+        rectStartY: 0,
       },
     },
   ];
@@ -295,19 +300,70 @@
         )}%, 0)`;
 
         objs.pinC.style.transform = `scaleY(${calcValues(values.pinC_scaleY, currentY)})`;
+
+        // 섹션 2의 마지막 부분에서 섹션 3에서 보여줘야야 될 캔버스 이미지와 위치, 크기를 미리 계산한다.
+        if (scrollRatio > 0.9) {
+          const { objs: objs3, values: values3 } = sceneInfo[3];
+          const { canvas, context, images } = objs3;
+          const { rect1PosX, rect2PosX } = values3;
+          // 캔버스 이미지가 기로세로 모두 꽉 차게하기 위해 셋팅
+          const widthRatio = window.innerWidth / canvas.width;
+          const heightRatio = window.innerHeight / canvas.height;
+          const canvasScaleRatio = widthRatio <= heightRatio ? heightRatio : widthRatio;
+          // 캔버스 사이즈에 맞춰 다시 계산한 넓이, 높이
+          const recalculatedInnerWidth = document.body.offsetWidth / canvasScaleRatio;
+          const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
+          // 캔버스를 가릴 박스의 사이즈 지정
+          const whiteRectWidth = recalculatedInnerWidth * 0.15;
+          // 박스의 x 좌표를 계산한다.
+          // 매번 새로 계산을 해줘야 하는 이유는 브라우저의 크기에 따라서 값이 유동적으로 변하기 때문
+          rect1PosX[0] = (canvas.width - recalculatedInnerWidth) / 2;
+          rect1PosX[1] = rect1PosX[0] - whiteRectWidth;
+          rect2PosX[0] = rect1PosX[0] + recalculatedInnerWidth - whiteRectWidth;
+          rect2PosX[1] = rect2PosX[0] + whiteRectWidth;
+
+          canvas.style.transform = `scale(${canvasScaleRatio})`;
+          context.fillStyle = 'white';
+          context.drawImage(images[0], 0, 0);
+          context.fillRect(rect1PosX[0], 0, parseInt(whiteRectWidth), canvas.height);
+          context.fillRect(rect2PosX[0], 0, parseInt(whiteRectWidth), canvas.height);
+        }
         break;
       case 3:
-        const { canvas, context, images } = objs;
-        const { rect1PosX, rect2PosX } = values;
+        const { canvas, context, images, canvasCaption } = objs;
+        const {
+          rect1PosX,
+          rect2PosX,
+          imageBlendHeight,
+          canvas_scale,
+          canvasCaption_opacity,
+          canvasCaption_translateY,
+        } = values;
+
+        // 스텝에 따라서 보여줘야될 이미지와 애니메이션을 실행한다.
+        let step = 0;
         // 캔버스 이미지가 기로세로 모두 꽉 차게하기 위해 셋팅
         const widthRatio = window.innerWidth / canvas.width;
         const heightRatio = window.innerHeight / canvas.height;
         const canvasScaleRatio = widthRatio <= heightRatio ? heightRatio : widthRatio;
         // 캔버스 사이즈에 맞춰 다시 계산한 넓이, 높이
-        const recalculatedInnerWidth = window.innerWidth / canvasScaleRatio;
+        const recalculatedInnerWidth = document.body.offsetWidth / canvasScaleRatio;
         const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
         // 캔버스를 가릴 박스의 사이즈 지정
         const whiteRectWidth = recalculatedInnerWidth * 0.15;
+
+        if (!values.rectStartY) {
+          values.rectStartY =
+            canvas.offsetTop + (canvas.height - canvas.height * canvasScaleRatio) / 2;
+
+          const rectAnimationStart = window.innerHeight / 2 / scrollHeight;
+          const rectAnimationEnd = values.rectStartY / scrollHeight;
+          rect1PosX[2].start = rectAnimationStart;
+          rect2PosX[2].start = rectAnimationStart;
+          rect1PosX[2].end = rectAnimationEnd;
+          rect2PosX[2].end = rectAnimationEnd;
+        }
+
         // 박스의 x 좌표를 계산한다.
         // 매번 새로 계산을 해줘야 하는 이유는 브라우저의 크기에 따라서 값이 유동적으로 변하기 때문
         rect1PosX[0] = (canvas.width - recalculatedInnerWidth) / 2;
@@ -316,9 +372,77 @@
         rect2PosX[1] = rect2PosX[0] + whiteRectWidth;
 
         canvas.style.transform = `scale(${canvasScaleRatio})`;
+        context.fillStyle = 'white';
         context.drawImage(images[0], 0, 0);
-        context.fillRect(rect1PosX[0], 0, parseInt(whiteRectWidth), canvas.height);
-        context.fillRect(rect2PosX[0], 0, parseInt(whiteRectWidth), canvas.height);
+        context.fillRect(
+          calcValues(rect1PosX, currentY),
+          0,
+          parseInt(whiteRectWidth),
+          canvas.height
+        );
+        context.fillRect(
+          calcValues(rect2PosX, currentY),
+          0,
+          parseInt(whiteRectWidth),
+          canvas.height
+        );
+
+        if (scrollRatio < rect1PosX[2].end) {
+          // 캔버스가 브라우저 상단에 닿지 았았을 때
+          step = 1;
+          canvas.classList.remove('sticky');
+        } else {
+          // 캔버스가 상단에 닿았을 때
+          step = 2;
+
+          imageBlendHeight[0] = 0;
+          imageBlendHeight[1] = canvas.height;
+          imageBlendHeight[2].start = rect1PosX[2].end;
+          imageBlendHeight[2].end = imageBlendHeight[2].start + 0.2;
+          let blendHeight = calcValues(imageBlendHeight, currentY);
+
+          context.drawImage(
+            images[1],
+            0,
+            canvas.height - blendHeight,
+            canvas.width,
+            blendHeight,
+            0,
+            canvas.height - blendHeight,
+            canvas.width,
+            blendHeight
+          );
+
+          canvas.classList.add('sticky');
+          canvas.style.top = `-${(canvas.height - canvas.height * canvasScaleRatio) / 2}px`;
+
+          if (scrollRatio > imageBlendHeight[2].end) {
+            canvas_scale[0] = canvasScaleRatio;
+            canvas_scale[1] = document.body.offsetWidth / (1.5 * canvas.width);
+            canvas_scale[2].start = imageBlendHeight[2].end;
+            canvas_scale[2].end = canvas_scale[2].start + 0.2;
+
+            canvas.style.transform = `scale(${calcValues(canvas_scale, currentY)})`;
+            canvas.style.marginTop = 0;
+          }
+
+          if (scrollRatio > canvas_scale[2].end && canvas_scale[2].end > 0) {
+            canvas.classList.remove('sticky');
+            canvas.style.marginTop = `${scrollHeight * 0.4}px`;
+
+            canvasCaption_opacity[2].start = canvas_scale[2].end;
+            canvasCaption_opacity[2].end = canvasCaption_opacity[2].start + 0.1;
+            canvasCaption_translateY[2].start = canvasCaption_opacity[2].start;
+            canvasCaption_translateY[2].end = canvasCaption_opacity[2].end;
+
+            canvasCaption.style.opacity = calcValues(canvasCaption_opacity, currentY);
+            canvas.style.transform = `translate3d(0, ${calcValue(
+              canvasCaption_translateY,
+              currentY
+            )}%, 0)`;
+          }
+        }
+
         break;
     }
   }
