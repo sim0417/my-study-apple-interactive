@@ -8,9 +8,15 @@
   let prevScrollHeight = 0;
   // 현재 활성화된 씬
   let currentScene = 0;
-
   // 다음 씬 활성화시 ture 로 전환
   let enableNewScene = false;
+
+  // 애니메이션 감속수치
+  let acc = 0.1;
+  let delayedYOffset = 0;
+  // request animation frame 을 제어하기위한 변수 ID 와 State 플래그 생성
+  let rafId;
+  let rafState;
 
   const sceneInfo = [
     {
@@ -147,6 +153,14 @@
     }
   }
 
+  function checkMemu() {
+    if (yOffset > 44) {
+      document.body.classList.add('local-nav-sticky');
+    } else {
+      document.body.classList.remove('local-nav-sticky');
+    }
+  }
+
   function setLayout() {
     const windowHeight = window.innerHeight;
     sceneInfo.forEach((scene) => {
@@ -219,8 +233,6 @@
     // TODO : 코드를 좀 더 깔끔하게 작성해야 함
     switch (currentScene) {
       case 0:
-        let imageSequence = Math.round(calcValues(values.imageSequence, currentY));
-        objs.context.drawImage(objs.videoImages[imageSequence], 0, 0);
         objs.canvas.style.opacity = calcValues(values.cnavas_opacity, currentY);
 
         objs.messageA.style.opacity = calcValues(
@@ -262,9 +274,6 @@
       case 1:
         break;
       case 2:
-        let imageSequence2 = Math.round(calcValues(values.imageSequence, currentY));
-        objs.context.drawImage(objs.videoImages[imageSequence2], 0, 0);
-
         objs.canvas.style.opacity = calcValues(
           scrollRatio <= 0.2 ? values.cnavas_opacity_in : values.cnavas_opacity_out,
           currentY
@@ -457,7 +466,7 @@
 
     enableNewScene = false;
 
-    if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+    if (delayedYOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
       currentScene++;
       enableNewScene = true;
 
@@ -465,7 +474,7 @@
         currentScene = sceneInfo.length - 1;
       }
     }
-    if (yOffset < prevScrollHeight) {
+    if (delayedYOffset < prevScrollHeight) {
       currentScene--;
       enableNewScene = true;
 
@@ -480,10 +489,42 @@
     playAnimation();
   }
 
+  function loop() {
+    // 값을 acc 의 비율만큼 증가시키는 패턴,
+    delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
+
+    if (!enableNewScene) {
+      // 좀 더 부드러운 비디오 이미지 처리를 위해 작성
+      if (currentScene === 0 || currentScene === 2) {
+        const { objs, values } = sceneInfo[currentScene];
+        const { context, videoImages } = objs;
+        const currentY = delayedYOffset - prevScrollHeight;
+        let imageSequence = Math.round(calcValues(values.imageSequence, currentY));
+        if (videoImages[imageSequence]) {
+          context.drawImage(videoImages[imageSequence], 0, 0);
+        }
+      }
+    }
+
+    rafId = requestAnimationFrame(loop);
+
+    // 연산이 목표치만큼 이루어졌을 때 불필요한 연산을 막기위해 멈춘다.
+    if (Math.abs(yOffset - delayedYOffset) < 1) {
+      cancelAnimationFrame(rafId);
+      rafState = false;
+    }
+  }
+
   window.addEventListener('scroll', () => {
     // 페이지의 현재 스크롤 값을 변수에 할당한다.
     yOffset = window.pageYOffset;
     scrollLoop();
+    checkMemu();
+
+    if (!rafState) {
+      rafId = requestAnimationFrame(loop);
+      rafState = true;
+    }
   });
 
   window.addEventListener('resize', () => {
