@@ -515,39 +515,38 @@
     }
   }
 
-  window.addEventListener('scroll', () => {
-    // 페이지의 현재 스크롤 값을 변수에 할당한다.
-    yOffset = window.pageYOffset;
-    scrollLoop();
-    checkMemu();
-
-    if (!rafState) {
-      rafId = requestAnimationFrame(loop);
-      rafState = true;
-    }
-  });
-
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 900) {
-      setLayout();
-    }
-
-    sceneInfo[3].values.rectStartY = 0;
-  });
-
-  // 모바일기기에서 화면전환시 레이아웃을 재설정 한다.
-  window.addEventListener('orientationchange', setLayout);
-
   window.addEventListener('load', () => {
     document.body.classList.remove('before-load');
     setLayout();
     const { context, videoImages } = sceneInfo[0].objs;
     context.drawImage(videoImages[0], 0, 0);
-  });
 
-  // 로딩 트랜지션 이벤트가 끝나면 바디에서 제거한다.
-  document.querySelector('.loading').addEventListener('transitionend', (e) => {
-    document.body.removeChild(e.currentTarget);
+    window.addEventListener('scroll', () => {
+      // 페이지의 현재 스크롤 값을 변수에 할당한다.
+      yOffset = window.pageYOffset;
+      scrollLoop();
+      checkMemu();
+
+      if (!rafState) {
+        rafId = requestAnimationFrame(loop);
+        rafState = true;
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 900) {
+        setLayout();
+      }
+      sceneInfo[3].values.rectStartY = 0;
+    });
+
+    // 모바일기기에서 화면전환시 레이아웃을 재설정 한다.
+    window.addEventListener('orientationchange', setLayout);
+
+    // 로딩 트랜지션 이벤트가 끝나면 바디에서 제거한다.
+    document.querySelector('.loading').addEventListener('transitionend', (e) => {
+      document.body.removeChild(e.currentTarget);
+    });
   });
 
   setCanvasImages();

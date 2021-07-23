@@ -20,6 +20,10 @@ body {
   background-color: white;
 }
 
+body.before-load {
+  overflow: hidden;
+}
+
 p {
   line-height: 1.6;
 }
