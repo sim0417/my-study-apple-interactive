@@ -228,6 +228,7 @@ footer {
 #show-scene-2 .scroll-section[id='2'] .sticky-elem,
 #show-scene-3 .scroll-section[id='3'] .sticky-elem {
   display: block;
+  will-change: transform, opacity;
 }
 
 .loading {

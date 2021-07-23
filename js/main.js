@@ -437,15 +437,14 @@
 
           if (scrollRatio > canvas_scale[2].end && canvas_scale[2].end > 0) {
             canvas.classList.remove('sticky');
-            canvas.style.marginTop = `${scrollHeight * 0.4}px`;
-
             canvasCaption_opacity[2].start = canvas_scale[2].end;
             canvasCaption_opacity[2].end = canvasCaption_opacity[2].start + 0.1;
             canvasCaption_translateY[2].start = canvasCaption_opacity[2].start;
             canvasCaption_translateY[2].end = canvasCaption_opacity[2].end;
 
+            canvas.style.marginTop = `${scrollHeight * 0.4}px`;
             canvasCaption.style.opacity = calcValues(canvasCaption_opacity, currentY);
-            canvas.style.transform = `translate3d(0, ${calcValue(
+            canvasCaption.style.transform = `translate3d(0, ${calcValues(
               canvasCaption_translateY,
               currentY
             )}%, 0)`;
@@ -489,7 +488,7 @@
     playAnimation();
   }
 
-  function loop() {
+  function smoothAnimationLoop() {
     // 값을 acc 의 비율만큼 증가시키는 패턴,
     delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
 
@@ -506,7 +505,7 @@
       }
     }
 
-    rafId = requestAnimationFrame(loop);
+    rafId = requestAnimationFrame(smoothAnimationLoop);
 
     // 연산이 목표치만큼 이루어졌을 때 불필요한 연산을 막기위해 멈춘다.
     if (Math.abs(yOffset - delayedYOffset) < 1) {
@@ -528,7 +527,7 @@
       checkMemu();
 
       if (!rafState) {
-        rafId = requestAnimationFrame(loop);
+        rafId = requestAnimationFrame(smoothAnimationLoop);
         rafState = true;
       }
     });
