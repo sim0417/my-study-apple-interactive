@@ -424,6 +424,7 @@
 
           canvas.classList.add('sticky');
           canvas.style.top = `-${(canvas.height - canvas.height * canvasScaleRatio) / 2}px`;
+          canvasCaption.style.opacity = 0;
 
           if (scrollRatio > imageBlendHeight[2].end) {
             canvas_scale[0] = canvasScaleRatio;
@@ -516,9 +517,22 @@
 
   window.addEventListener('load', () => {
     document.body.classList.remove('before-load');
+    sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
     setLayout();
-    const { context, videoImages } = sceneInfo[0].objs;
-    context.drawImage(videoImages[0], 0, 0);
+
+    if (yOffset > 0) {
+      let tempYoffSet = yOffset;
+      let tempScrollCount = 0;
+      let intervalId = setInterval(() => {
+        scrollTo(0, tempYoffSet);
+        tempYoffSet += 1;
+
+        tempScrollCount++;
+        if (tempScrollCount > 20) {
+          clearInterval(intervalId);
+        }
+      }, 20);
+    }
 
     window.addEventListener('scroll', () => {
       // 페이지의 현재 스크롤 값을 변수에 할당한다.
@@ -535,12 +549,18 @@
     window.addEventListener('resize', () => {
       if (window.innerWidth > 900) {
         setLayout();
+        sceneInfo[3].values.rectStartY = 0;
+        // window.location.reload();
       }
-      sceneInfo[3].values.rectStartY = 0;
     });
 
     // 모바일기기에서 화면전환시 레이아웃을 재설정 한다.
-    window.addEventListener('orientationchange', setLayout);
+    window.addEventListener('orientationchange', () => {
+      scrollTo(0, 0);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    });
 
     // 로딩 트랜지션 이벤트가 끝나면 바디에서 제거한다.
     document.querySelector('.loading').addEventListener('transitionend', (e) => {
