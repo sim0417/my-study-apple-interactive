@@ -294,6 +294,14 @@ footer {
   fill: transparent;
 }
 
+.normal-content {
+  margin-bottom: 10rem;
+}
+
+.scroll-effect-end .sticky-elem {
+  display: none !important;
+}
+
 @media (min-width: 1024px) {
   .scroll-section[id='0'] h1 {
     font-size: 9vw;

@@ -424,7 +424,7 @@
 
           canvas.classList.add('sticky');
           canvas.style.top = `-${(canvas.height - canvas.height * canvasScaleRatio) / 2}px`;
-          canvasCaption.style.opacity = 0;
+          canvasCaption.style.display = 'none';
 
           if (scrollRatio > imageBlendHeight[2].end) {
             canvas_scale[0] = canvasScaleRatio;
@@ -444,6 +444,7 @@
             canvasCaption_translateY[2].end = canvasCaption_opacity[2].end;
 
             canvas.style.marginTop = `${scrollHeight * 0.4}px`;
+            canvasCaption.style.display = 'block';
             canvasCaption.style.opacity = calcValues(canvasCaption_opacity, currentY);
             canvasCaption.style.transform = `translate3d(0, ${calcValues(
               canvasCaption_translateY,
@@ -472,8 +473,12 @@
 
       if (currentScene >= sceneInfo.length) {
         currentScene = sceneInfo.length - 1;
+        document.body.classList.add('scroll-effect-end');
       }
+    } else {
+      document.body.classList.remove('scroll-effect-end');
     }
+
     if (delayedYOffset < prevScrollHeight) {
       currentScene--;
       enableNewScene = true;
