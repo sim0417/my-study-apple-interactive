@@ -18,9 +18,13 @@ Study web interactive skills by cloning the apple home page
 ## Result
 
 스크롤에 따라 이미지 재생과 메시지 표시
+
 ![apple_1_1](https://user-images.githubusercontent.com/34697086/127134893-1923560c-1620-4327-bf5c-88353c92c526.gif)
+
 ![apple_1](https://user-images.githubusercontent.com/34697086/127134915-3da29724-cc5f-45b8-bf92-0642524b4fe2.gif)
 
 스크롤에 따라 이미지가 교차되면서 표시 후 크기 변경
+
 ![apple_2_2](https://user-images.githubusercontent.com/34697086/127134925-ac845745-5919-4d5b-a97a-32cc52724223.gif)
+
 ![apple_2](https://user-images.githubusercontent.com/34697086/127134935-751b74d7-7331-403f-857a-cabd11353c6b.gif)
